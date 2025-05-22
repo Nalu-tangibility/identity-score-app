@@ -20,22 +20,21 @@ function getHistory() {
 
 // スコアを計算する関数
 function calculateScore(universality, frequency, duration, monthsAgo) {
-    // 要因aの計算: 1/m + log(1+t) + log(1+d) + p
-    const a = (1 / universality) + 
-              Math.log(1 + frequency) + 
-              Math.log(1 + duration) + 
-              (24 - Math.min(monthsAgo, 24)) / 24;
-
-    // 0-100のスケールに正規化（簡易的な正規化）
-    // 理論上の最大値を4とし、それを100点とする
-    return Math.min(Math.round((a / 4) * 100), 100);
+    // 要因aの計算: 1/m + log(1+t) + log(1+d) + (24-p)/24
+    const score = (1 / universality) + 
+                 Math.log(1 + frequency) + 
+                 Math.log(1 + duration) + 
+                 (24 - Math.min(monthsAgo, 24)) / 24;
+    
+    // 小数点第2位までで四捨五入
+    return Math.round(score * 100) / 100;
 }
 
 // 評価結果を表示する関数
 function displayScore(score, evaluation) {
     const scoreDisplay = document.getElementById('scoreDisplay');
     scoreDisplay.innerHTML = `
-        <h3>評価スコア: ${score}点</h3>
+        <h3>評価スコア: ${score}</h3>
         <p>対象者: ${evaluation.personName || '名前なし'}</p>
         <p>普遍性(m): ${evaluation.universality}人</p>
         <p>体験量(t): ${evaluation.frequency}回</p>
@@ -52,7 +51,7 @@ function displayHistory() {
     historyList.innerHTML = history.reverse().map(item => `
         <div class="history-item">
             <h4>${item.personName || '名前なし'} - ${new Date(item.date).toLocaleDateString()}</h4>
-            <p>評価スコア: ${item.score}点</p>
+            <p>評価スコア: ${item.score}</p>
             <p>普遍性: ${item.universality}人 / 体験量: ${item.frequency}回</p>
             <p>継続期間: ${item.duration}ヶ月 / 過去性: ${item.monthsAgo}ヶ月前</p>
             <button onclick="deleteEvaluation(${item.id})" class="delete-btn">削除</button>
