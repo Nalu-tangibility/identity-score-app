@@ -98,4 +98,9 @@ document.getElementById('evaluationForm').addEventListener('submit', function(e)
     // 履歴を更新
     displayHistory();
     
-    // フォームを
+    // フォームをリセット
+    this.reset();
+});
+
+// 初期表示時に履歴を表示
+document.addEventListener('DOMContentLoaded', displayHistory);
